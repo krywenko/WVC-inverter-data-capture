@@ -37,9 +37,8 @@ H2="$(echo $line | cut  -c3-4 )"
 
 Payload="$(echo \\xf2\\x$M1\\x$M2\\x$M3\\x$M4\\x$H1\\x$H2\\x65)" 
 
-echo  -en ${Payload}  > /tmp/ttyDUMMY
+echo  -en ${Payload}  > /tmp/ttyWVCDUMMY
 
-#echo -en '\xf2\xfb\x04\x11\x85\xc7\x84\x65' > /dev/ttyDUMMY
 sleep .6
 
 OUTPUT="$(cat ser-data | sed 's/<.*//' | sed 's/>//' | sed 's/0x//'  | sed -E ':a ; $!N ; s/\n\s+/ / ; ta ; P ; D' | tr -d '[:blank:]' | sed '/^$/d' | sed -nr '/^.{34,34}$/p')"
@@ -52,8 +51,7 @@ MQttT="$(cat 1200lookup |grep -o TMP$TDEC.* | cut -f2- -d:   | sed 's/[^0-9]*//g
      echo  " no  input from inverter "  $line
       # > ser-data
         sleep .4
-        #echo -en '\xf8\xfb\x04\x11\x85\xff\xff\x6b' > /tmp/ttyDUMMY
-        echo -en ${ModemTest} > /tmp/ttyDUMMY   
+        echo -en ${ModemTest} > /tmp/ttyWVCDUMMY   
         sleep 2
         OUTPUT="$(cat ser-data | sed 's/<.*//' | sed 's/>//' | sed 's/0x//'  | sed -E ':a ; $!N ; s/\n\s+/ / ; ta ; P ; D' | tr -d '[:blank:]' | sed '/^$/d' )"
           if [ -z  "$OUTPUT" ]; then
