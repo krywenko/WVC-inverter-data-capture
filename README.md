@@ -15,4 +15,4 @@ inverter.list  is a file created by you that contains the 4 character  ID of you
  
  the script is set for wvc 1200 series inverters     you can extract other series from the compressed file of inverters 
  
-if you want edit script to add in mqtt transmits or sending data directly to your data base  feel free to edict script
+if you want edit script to add in mqtt transmits or sending data directly to your data base  feel free to edit script
