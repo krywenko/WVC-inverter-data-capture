@@ -60,13 +60,14 @@ MQttT="$(cat 1200lookup |grep -o TMP$TDEC.* | cut -f2- -d:   | sed 's/[^0-9]*//g
              pkill interceptty
               sleep .4
              echo  " restarting COM"
-              interceptty -s 'ispeed 9600 ospeed 9600' -l $1 /tmp/ttyDUMMY -f hex >> ser-data  &
+              interceptty -s 'ispeed 9600 ospeed 9600' -l $1 /tmp/ttyWVCDUMMY -f hex >> ser-data  &
               sleep .4
                echo  "started"  
            fi
      else
          echo  "Inverter  " $line\
          echo "Temp " $MQttT
+         # ADD secondary procees to send DATa to  database or MQTT here
     fi
 
 ######Convert Hex to VAC #########
@@ -74,18 +75,21 @@ TEMP="$(echo $OUTPUT | cut -c29-32 | tac -rs .. | echo $(tr -d '\n') )"
 TDEC="$(echo $(( 16#$TEMP )))"
 MQttVAC="$(cat 1200lookup |grep -m 1 -o VAC$TDEC.* | cut -f2- -d:   | sed 's/[^.0-9]*//g')"
 echo "VAC  " $MQttVAC
+# ADD secondary procees to send DATa to  database or MQTT here
 
 ######Convert Hex to AAC #########
 TEMP="$(echo $OUTPUT | cut -c25-28 | tac -rs .. | echo $(tr -d '\n') )"
 TDEC="$(echo $(( 16#$TEMP )))"
 MQttAAC="$(cat 1200lookup |grep -m 1 -o AACA$TDEC.* | cut -f2- -d:   | sed 's/[^.0-9]*//g')"
 echo "AAC  " $MQttAAC
+# ADD secondary procees to send DATa to  database or MQTT here
 
 ######Convert Hex to VDC #########
 TEMP="$(echo $OUTPUT | cut -c21-24 | tac -rs .. | echo $(tr -d '\n') )"
 TDEC="$(echo $(( 16#$TEMP )))"
 MQttVDC="$(cat 1200lookup |grep -m 1  -o VDC$TDEC.* | cut -f2- -d:   | sed 's/[^.0-9]*//g')"
 echo "VDC  " $MQttVDC
+# ADD secondary procees to send DATa to  database or MQTT here
 
 ######Convert Hex to VAC #########
 TEMP="$(echo $OUTPUT | cut -c17-20 | tac -rs .. | echo $(tr -d '\n') )"
@@ -93,7 +97,7 @@ TDEC="$(echo $(( 16#$TEMP )))"
 MQttADC="$(cat 1200lookup |grep -m 1 -o ADC$TDEC.* | cut -f2- -d:   | sed 's/[^.0-9]*//g')"
 echo "ADC  " $MQttADC
 
-# ADD secondary procees to send DATa to  database or MQTT
+# ADD secondary procees to send DATa to  database or MQTT here
 
 done < $filename
 
