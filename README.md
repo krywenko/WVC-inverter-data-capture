@@ -8,7 +8,8 @@ example:
 
 WVC /dev/ttyUSB0 inverters f3b67ac4
 
-inverter.list  is a file created by you that contains the 4 character  ID of your inverters  each inverter ID on a new line 
+inverter.list  is a file created by you that contains the 4 character  ID of your inverters  each inverter ID on a new line. it can be what ever name you want it to be. if you want to connect to multiple modems you can have  different list for each modem.
+
 
  modemID is found on the back of your WVCmodem  it is 8 characters long 
  
