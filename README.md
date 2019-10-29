@@ -16,4 +16,6 @@ c81f
  
  modemID is found on the back of your WVCmodem  it is 8 characters long 
  
+ the script is set for wvc 1200 series inverters     you can extract other series from the compressed file of inverters 
+ 
 if you want edit script to add in mqtt transmits or sending data directly to your data base  feel free to edict script
