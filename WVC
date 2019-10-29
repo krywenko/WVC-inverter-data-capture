@@ -7,7 +7,7 @@ M2="$(echo $Modem | cut  -c3-4 )"
 M3="$(echo $Modem | cut  -c5-6 )"
 M4="$(echo $Modem | cut  -c7-8 )"
 
-ModemTest="$(echo \\xf8\\x$M1\\x$M2\\x$M3\\x$M4\\x$H1\\x$H2\\x6b)" 
+ModemTest="$(echo \\xf8\\x$M1\\x$M2\\x$M3\\x$M4\\xff\\xff\\x6b)" 
 
 if [ -z  "$1" ]; then
 echo "missing arguments in this order  ComPort  inverter.list  modemID"
@@ -68,36 +68,37 @@ MQttT="$(cat 1200lookup |grep -o TMP$TDEC.* | cut -f2- -d:   | sed 's/[^0-9]*//g
          echo  "Inverter  " $line\
          echo "Temp " $MQttT
          # ADD secondary procees to send DATa to  database or MQTT here
-    fi
-
+         #mosquitto_pub -t "incoming/$3/TEMP-Energy/temperature-$line" -m "N:$MQttT"
 ######Convert Hex to VAC #########
 TEMP="$(echo $OUTPUT | cut -c29-32 | tac -rs .. | echo $(tr -d '\n') )"
 TDEC="$(echo $(( 16#$TEMP )))"
 MQttVAC="$(cat 1200lookup |grep -m 1 -o VAC$TDEC.* | cut -f2- -d:   | sed 's/[^.0-9]*//g')"
 echo "VAC  " $MQttVAC
 # ADD secondary procees to send DATa to  database or MQTT here
-
+#mosquitto_pub -t "incoming/$3/AC-Energy/voltage-$line" -m "N:$MQttVAC"
 ######Convert Hex to AAC #########
 TEMP="$(echo $OUTPUT | cut -c25-28 | tac -rs .. | echo $(tr -d '\n') )"
 TDEC="$(echo $(( 16#$TEMP )))"
 MQttAAC="$(cat 1200lookup |grep -m 1 -o AACA$TDEC.* | cut -f2- -d:   | sed 's/[^.0-9]*//g')"
 echo "AAC  " $MQttAAC
 # ADD secondary procees to send DATa to  database or MQTT here
-
+#mosquitto_pub -t "incoming/$3/AC-Energy/current-$line" -m "N:$MQttAAC"
 ######Convert Hex to VDC #########
 TEMP="$(echo $OUTPUT | cut -c21-24 | tac -rs .. | echo $(tr -d '\n') )"
 TDEC="$(echo $(( 16#$TEMP )))"
 MQttVDC="$(cat 1200lookup |grep -m 1  -o VDC$TDEC.* | cut -f2- -d:   | sed 's/[^.0-9]*//g')"
 echo "VDC  " $MQttVDC
 # ADD secondary procees to send DATa to  database or MQTT here
-
+#mosquitto_pub -t "incoming/$3/DC-Energy/voltage-$line" -m "N:$MQttVDC"
 ######Convert Hex to VAC #########
 TEMP="$(echo $OUTPUT | cut -c17-20 | tac -rs .. | echo $(tr -d '\n') )"
 TDEC="$(echo $(( 16#$TEMP )))"
 MQttADC="$(cat 1200lookup |grep -m 1 -o ADC$TDEC.* | cut -f2- -d:   | sed 's/[^.0-9]*//g')"
 echo "ADC  " $MQttADC
-
 # ADD secondary procees to send DATa to  database or MQTT here
+#mosquitto_pub -t "incoming/$3/DC-Energy/current-$line" -m "N:$MQttADC"
+      
+    fi
 
 done < $filename
 
