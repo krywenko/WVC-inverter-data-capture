@@ -23,12 +23,15 @@ exit -1
 fi
 echo " Using modem  "$M1 $M2 $M3 $M4 " at port " $1 "  Using  inverter list " $2
 
+I="$(ps -efww | grep '[W]VC /dev' | wc -l)"
+echo  "virtural port " /dev/ttyWVCDUMMY$I
+
 for (( ; ; ))
 do
 
 while read line; do
 # reading each line
->  /dev/shm/ser-data
+>  /dev/shm/ser-data$I
 sleep .6
 
 H1="$(echo $line | cut  -c1-2 )"
@@ -37,11 +40,11 @@ H2="$(echo $line | cut  -c3-4 )"
 
 Payload="$(echo \\xf2\\x$M1\\x$M2\\x$M3\\x$M4\\x$H1\\x$H2\\x65)" 
 
-echo  -en ${Payload}  > /tmp/ttyWVCDUMMY
+echo  -en ${Payload}  > /tmp/ttyWVCDUMMY$I
 
 sleep .6
 
-OUTPUT="$(cat /dev/shm/ser-data | sed 's/<.*//' | sed 's/>//' | sed 's/0x//'  | sed -E ':a ; $!N ; s/\n\s+/ / ; ta ; P ; D' | tr -d '[:blank:]' | sed '/^$/d' | sed -nr '/^.{34,34}$/p')"
+OUTPUT="$(cat /dev/shm/ser-data$I | sed 's/<.*//' | sed 's/>//' | sed 's/0x//'  | sed -E ':a ; $!N ; s/\n\s+/ / ; ta ; P ; D' | tr -d '[:blank:]' | sed '/^$/d' | sed -nr '/^.{34,34}$/p')"
 sleep .8
 ######Convert Hex to temp #########
 TEMP="$(echo $OUTPUT | cut -c33-34)"
@@ -49,18 +52,18 @@ TDEC="$(echo $(( 16#$TEMP )))"
 MQttT="$(cat 1200lookup |grep -o TMP$TDEC.* | cut -f2- -d:   | sed 's/[^0-9]*//g')"
  if [ $MQttT -eq 86 ]; then
      echo  " no  input from inverter "  $line
-      # > /dev/shm/ser-data
+      # > /dev/shm/ser-data$I
         sleep .4
-        echo -en ${ModemTest} > /tmp/ttyWVCDUMMY   
+        echo -en ${ModemTest} > /tmp/ttyWVCDUMMY$I   
         sleep 2
-        OUTPUT="$(cat /dev/shm/ser-data | sed 's/<.*//' | sed 's/>//' | sed 's/0x//'  | sed -E ':a ; $!N ; s/\n\s+/ / ; ta ; P ; D' | tr -d '[:blank:]' | sed '/^$/d' )"
+        OUTPUT="$(cat /dev/shm/ser-data$I | sed 's/<.*//' | sed 's/>//' | sed 's/0x//'  | sed -E ':a ; $!N ; s/\n\s+/ / ; ta ; P ; D' | tr -d '[:blank:]' | sed '/^$/d' )"
           if [ -z  "$OUTPUT" ]; then
             echo $OUTPUT 
               echo " no COM  detected " 
              pkill interceptty
               sleep .4
              echo  " restarting COM"
-              interceptty -s 'ispeed 9600 ospeed 9600' -l $1 /tmp/ttyWVCDUMMY -f hex >> /dev/shm/ser-data  &
+              interceptty -s 'ispeed 9600 ospeed 9600' -l $1 /tmp/ttyWVCDUMMY$I -f hex >> /dev/shm/ser-data$I  &
               sleep .4
                echo  "started"  
            fi
