@@ -28,7 +28,7 @@ do
 
 while read line; do
 # reading each line
->  ser-data
+>  /dev/shm/ser-data
 sleep .6
 
 H1="$(echo $line | cut  -c1-2 )"
@@ -41,7 +41,7 @@ echo  -en ${Payload}  > /tmp/ttyWVCDUMMY
 
 sleep .6
 
-OUTPUT="$(cat ser-data | sed 's/<.*//' | sed 's/>//' | sed 's/0x//'  | sed -E ':a ; $!N ; s/\n\s+/ / ; ta ; P ; D' | tr -d '[:blank:]' | sed '/^$/d' | sed -nr '/^.{34,34}$/p')"
+OUTPUT="$(cat /dev/shm/ser-data | sed 's/<.*//' | sed 's/>//' | sed 's/0x//'  | sed -E ':a ; $!N ; s/\n\s+/ / ; ta ; P ; D' | tr -d '[:blank:]' | sed '/^$/d' | sed -nr '/^.{34,34}$/p')"
 sleep .8
 ######Convert Hex to temp #########
 TEMP="$(echo $OUTPUT | cut -c33-34)"
@@ -49,18 +49,18 @@ TDEC="$(echo $(( 16#$TEMP )))"
 MQttT="$(cat 1200lookup |grep -o TMP$TDEC.* | cut -f2- -d:   | sed 's/[^0-9]*//g')"
  if [ $MQttT -eq 86 ]; then
      echo  " no  input from inverter "  $line
-      # > ser-data
+      # > /dev/shm/ser-data
         sleep .4
         echo -en ${ModemTest} > /tmp/ttyWVCDUMMY   
         sleep 2
-        OUTPUT="$(cat ser-data | sed 's/<.*//' | sed 's/>//' | sed 's/0x//'  | sed -E ':a ; $!N ; s/\n\s+/ / ; ta ; P ; D' | tr -d '[:blank:]' | sed '/^$/d' )"
+        OUTPUT="$(cat /dev/shm/ser-data | sed 's/<.*//' | sed 's/>//' | sed 's/0x//'  | sed -E ':a ; $!N ; s/\n\s+/ / ; ta ; P ; D' | tr -d '[:blank:]' | sed '/^$/d' )"
           if [ -z  "$OUTPUT" ]; then
             echo $OUTPUT 
               echo " no COM  detected " 
              pkill interceptty
               sleep .4
              echo  " restarting COM"
-              interceptty -s 'ispeed 9600 ospeed 9600' -l $1 /tmp/ttyWVCDUMMY -f hex >> ser-data  &
+              interceptty -s 'ispeed 9600 ospeed 9600' -l $1 /tmp/ttyWVCDUMMY -f hex >> /dev/shm/ser-data  &
               sleep .4
                echo  "started"  
            fi
