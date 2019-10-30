@@ -79,7 +79,13 @@ echo "VAC  " $MQttVAC
 ######Convert Hex to AAC #########
 TEMP="$(echo $OUTPUT | cut -c25-28 | tac -rs .. | echo $(tr -d '\n') )"
 TDEC="$(echo $(( 16#$TEMP )))"
+if [ ${MQttVAC%.*} -gt 150 ]; then
+ MQttAAC="$(cat 1200lookup |grep -m 1 -o AACB$TDEC.* | cut -f2- -d:   | sed 's/[^.0-9]*//g')"
+ #echo "high volt"
+ else
 MQttAAC="$(cat 1200lookup |grep -m 1 -o AACA$TDEC.* | cut -f2- -d:   | sed 's/[^.0-9]*//g')"
+#echo "low volt"
+fi
 echo "AAC  " $MQttAAC
 # ADD secondary procees to send DATa to  database or MQTT here
 #mosquitto_pub -t "incoming/$3/AC-Energy/current-$line" -m "N:$MQttAAC"
