@@ -17,7 +17,7 @@ inverter.list  is a file created by you that contains the 4 character  ID of you
  
 if you want edit script to add in mqtt transmits or sending data directly to your data base  feel free to edit script
 
-if using  my version of energy monitor based on BPI R1 and/or Zero OPi  then uncomment  mosquitto_pub and it will automatcially written to  the localize  databases on these energy monitors
+if using  my version of energy monitor based on BPI R1 and/or Zero OPi  then uncomment  mosquitto_pub and it will automatcially written to  the localize  databases on these energy monitors ( you need to compole interceptty for them and install it) or use a secondary Zero OPi  that the  WVC modem is plugged into and  point the Mqtt pubish at BPi-R1 energy monitor  router 
 
 https://github.com/krywenko/BPI-R1_Zigbee2mqtt-energymonitor-openwrt
 
