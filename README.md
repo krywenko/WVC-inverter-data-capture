@@ -24,3 +24,6 @@ https://github.com/krywenko/BPI-R1_Zigbee2mqtt-energymonitor-openwrt
 https://github.com/krywenko/Zero-Orange-Pi--MQTT-openwrt
 
 
+if you have issue  you can contact me here -- 
+
+https://community.openenergymonitor.org/t/data-logging-wvc-gti-inverters-with-wireless-serial-modems/12302/2
