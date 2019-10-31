@@ -1,5 +1,14 @@
 #!/bin/bash
 
+volts=0
+av=0
+aa=0
+watts=0
+dv=0
+da=0
+n=0
+
+
 filename=$2
 Modem=$3
 M1="$(echo $Modem | cut  -c1-2 )"
@@ -106,11 +115,45 @@ MQttADC="$(cat 1200lookup |grep -m 1 -o ADC$TDEC.* | cut -f2- -d:   | sed 's/[^.
 echo "ADC  " $MQttADC
 # ADD secondary procees to send DATa to  database or MQTT here
 mosquitto_pub -t "incoming/$3/DC-Energy/current-$line" -m "N:$MQttADC"
-      
+   
+   
+av="$(echo $av+$MQttVAC |bc -l)"
+aa="$( echo $aa+$MQttAAC |bc -l)"
+dv="$(echo $dv+$MQttVDC |bc -l)"
+da="$( echo $da+$MQttADC |bc -l)"
+DC="$( echo $MQttVDC \* $MQttADC |bc -l)"
+AC="$( echo $MQttVAC \* $MQttAAC |bc -l)"
+mosquitto_pub -t "incoming/$3/DC-Energy/power-$line" -m "N:$DC"
+mosquitto_pub -t "incoming/$3/AC-Energy/power-$line" -m "N:$AC"
+
+n=$[$n+1]
     fi
 
 done < $filename
 
+if [ $n -eq 0 ]; then
+ echo " no wattage data "
+ else
+
+    av="$( echo $av / $n | bc -l )"
+ #   aa="$( echo $aa / $n | bc -l )"  #enambe for panel average
+    dv="$( echo $dv / $n | bc -l )"
+  #  da="$( echo $da / $n | bc -l )"   #enable for panel average 
+  
+    watts="$(echo $av \* $aa | bc -l | rev | cut -c 19- | rev)"
+    echo  "AC watts " $watts
+    mosquitto_pub -t "incoming/$3/AC-Energy/power-Total" -m "N:$watts"
+ 
+    watts="$(echo $dv \* $da | bc -l | rev | cut -c 19- | rev)"
+    echo  "DC watts " $watts
+    mosquitto_pub -t "incoming/$3/DC-Energy/power-Total" -m "N:$watts"
+   fi 
+    av=0
+    aa=0
+    da=0
+    dv=0
+    n=0
+    
 
 done
 
