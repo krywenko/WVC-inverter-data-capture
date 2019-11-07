@@ -1,6 +1,6 @@
 # WVC-inverter-data-capture
 Bash script  to display data from wireless  WVC inverters  from the serial modem
-you will need to compile and install interceptty ( https://github.com/geoffmeyers/interceptty) for openwrt precompoled binary can be found here  work on >=17 of open wrt 17 does not have jq  18 and up does bash grep, stty, bc, tac need to be installed on open wrt) 
+you will need to compile and install interceptty ( https://github.com/geoffmeyers/interceptty) for openwrt precompiled binary can be found here (  https://github.com/krywenko/WVC-inverters) this version  works on >=17 of open wrt 17 does not have jq  18 and up does bash grep, stty, bc, tac need to be installed on open wrt) 
 
 once interceptty is installed  the  command line  arguements  for WVC is wVC port inverter.list  modemID
 
